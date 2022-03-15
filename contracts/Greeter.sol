@@ -33,22 +33,30 @@ contract MarketPlace {
         USDCAddress = _USDCAddress;
         DAIAddress = _DAIAddress;
     }
-      function getDaiPrices() private returns(int){
+      function getDaiPrices() view private returns(int){
         (
-            ,int price,
+            /*uint80 roundID*/,
+            int price,
+            /*uint startedAt*/,
+            /*uint timeStamp*/,
+            /*uint80 answeredInRound*/
         ) = DAIPriceFeed.latestRoundData();
         return price;
     }
-          function getUSDCPrices() private returns(int){
+          function getUSDCPrices() private view returns(int){
         (
-            int price
+            /*uint80 roundID*/,
+            int price,
+            /*uint startedAt*/,
+            /*uint timeStamp*/,
+            /*uint80 answeredInRound*/
         ) = USDCPriceFeed.latestRoundData();
         return price;
     }
     function comparePrices(uint256 DAIAmount, uint256 USDCAmount) private returns(bool){
        int DAIPrice = getDaiPrices();
        int USDCPrice = getUSDCPrices();
-       return ((DAIAmount * uint(DAIPrice)) == (USDCAmount * uint(USDCAmount)));
+       return ((DAIAmount * uint(DAIPrice)) == (USDCAmount * uint(USDCPrice)));
     }
 
     function AddUserToDataBase(uint256 _amount, uint8 tokenType, bool _status) private returns(bool){
@@ -57,6 +65,7 @@ contract MarketPlace {
         addedUser.tokenAmount = _amount;
         addedUser.status = _status;
        usersDetails[tokenType].push(addedUser);
+       return true;
     }
 
     function DaiToUSDC(uint256 amount) public returns (bool) {
@@ -81,7 +90,7 @@ contract MarketPlace {
             AddUserToDataBase(amount, 1, false);
             daiUsersNumbers;
         }
-        exchange(msg.sender,compartibleUser.userAddress, amount, 1,  compartibleUser.tokenAmount);
+        emit exchange(msg.sender,compartibleUser.userAddress, amount, 1,  compartibleUser.tokenAmount);
         return true;
     }
 
@@ -107,7 +116,7 @@ contract MarketPlace {
             AddUserToDataBase(_amount, 2, false);
             usdcUsersNumbers++;
         }
-        exchange(msg.sender,compartibleUser.userAddress, _amount, 2,  compartibleUser.tokenAmount);
+        emit exchange(msg.sender,compartibleUser.userAddress, _amount, 2,  compartibleUser.tokenAmount);
         return true;
     }
 }
