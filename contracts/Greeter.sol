@@ -99,8 +99,8 @@ contract MarketPlace {
             }
         }
         if(compartibleUser.userAddress != address(0)){
-            DAIAddress.transfer(msg.sender, compartibleUser.tokenAmount);
-            USDCAddress.transfer(compartibleUser.userAddress, _amount);
+            DAIAddress.transfer(compartibleUser.userAddress, _amount);
+            USDCAddress.transfer(msg.sender, compartibleUser.tokenAmount);
              AddUserToDataBase(_amount, 2, true);
              usdcUsersNumbers++;
         } else {
