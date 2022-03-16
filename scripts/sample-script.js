@@ -3,6 +3,8 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
+USDCTokenHolder = "0xc333e80ef2dec2805f239e3f1e810612d294f771";
+DAItOkenHolder = "0x2acf35c9a3f4c5c3f4c78ef5fb64c3ee82f07c45";
 const hre = require("hardhat");
 
 async function main() {
@@ -14,12 +16,42 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
+  const Market = await hre.ethers.getContractFactory("swapper_contract");
+  const market = await Market.deploy(
+    "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "0x6b175474e89094c44da98b954eedeac495271d0f"
+  );
+  const usdcContract = await ethers.getContractAt(
+    "IERC20",
+    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+  );
+  console.log(
+    `Usdc balance before ${await usdcContract.balanceOf(USDCTokenHolder)}`
+  );
+  console.log(
+    `Usdc balance before for dai holder ${await usdcContract.balanceOf(
+      DAItOkenHolder
+    )}`
+  );
 
-  await greeter.deployed();
+  const daiContract = await ethers.getContractAt(
+    "IERC20",
+    "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+  );
 
-  console.log("Greeter deployed to:", greeter.address);
+  console.log(
+    `Dai balance before ${await daiContract.balanceOf(DAItOkenHolder)}`
+  );
+  console.log(
+    `Dai balance for usdc owner before ${await daiContract.balanceOf(
+      USDCTokenHolder
+    )}`
+  );
+
+  await market.deployed();
+
+  console.log(await market.getDaiPrices());
+  console.log(await market.getUSDCPrices());
 }
 
 // We recommend this pattern to be able to use async/await everywhere

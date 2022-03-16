@@ -28,12 +28,12 @@ contract MarketPlace {
     // DAIToUsd = 0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF
     //USDCToDai = 0xa24de01df22b63d23Ebc1882a5E3d4ec0d907bFB
     constructor(IERC20Metadata _USDCAddress, IERC20Metadata _DAIAddress ) {
-        DAIPriceFeed = AggregatorV3Interface(0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF);
-        USDCPriceFeed = AggregatorV3Interface(0xa24de01df22b63d23Ebc1882a5E3d4ec0d907bFB);
+        DAIPriceFeed = AggregatorV3Interface(0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6);
+        USDCPriceFeed = AggregatorV3Interface(0xAed0c38402a5d19df6E4c03F4E2DceD6e29c1ee9);
         USDCAddress = _USDCAddress;
         DAIAddress = _DAIAddress;
     }
-      function getDaiPrices() view private returns(int){
+      function getDaiPrices() public view returns(int){
         (
             /*uint80 roundID*/,
             int price,
@@ -43,7 +43,7 @@ contract MarketPlace {
         ) = DAIPriceFeed.latestRoundData();
         return price;
     }
-          function getUSDCPrices() private view returns(int){
+          function getUSDCPrices() public view returns(int){
         (
             /*uint80 roundID*/,
             int price,
@@ -51,9 +51,10 @@ contract MarketPlace {
             /*uint timeStamp*/,
             /*uint80 answeredInRound*/
         ) = USDCPriceFeed.latestRoundData();
+        // console.log("usdc price:",price);
         return price;
     }
-    function comparePrices(uint256 DAIAmount, uint256 USDCAmount) private returns(bool){
+    function comparePrices(uint256 DAIAmount, uint256 USDCAmount) private view returns(bool){
        int DAIPrice = getDaiPrices();
        int USDCPrice = getUSDCPrices();
        return ((DAIAmount * uint(DAIPrice)) == (USDCAmount * uint(USDCPrice)));
