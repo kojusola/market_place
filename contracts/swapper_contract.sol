@@ -10,9 +10,9 @@ contract MarketPlace {
     AggregatorV3Interface internal USDCPriceFeed;
     uint256 daiUsersNumbers;
     uint256 usdcUsersNumbers;
-    IERC20Metadata USDCAddress ;
+    IERC20 USDCAddress ;
     // 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 ;
-    IERC20Metadata DAIAddress ;
+    IERC20 DAIAddress ;
     // 0x6B175474E89094C44Da98b954EedeAC495271d0F ;
     enum tokens {DAI, USDC}
     event exchange(address sender, address receiver, uint amount, uint8 tokenType, uint receiverTokenAmount);
@@ -27,11 +27,11 @@ contract MarketPlace {
     // Rinkeby network;
     // DAIToUsd = 0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF
     //USDCToDai = 0xa24de01df22b63d23Ebc1882a5E3d4ec0d907bFB
-    constructor(IERC20Metadata _USDCAddress, IERC20Metadata _DAIAddress ) {
+    constructor(address _USDCAddress, address _DAIAddress ) {
         DAIPriceFeed = AggregatorV3Interface(0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6);
         USDCPriceFeed = AggregatorV3Interface(0xAed0c38402a5d19df6E4c03F4E2DceD6e29c1ee9);
-        USDCAddress = _USDCAddress;
-        DAIAddress = _DAIAddress;
+        USDCAddress = IERC20(_USDCAddress);
+        DAIAddress = IERC20(_DAIAddress);
     }
       function getDaiPrices() public view returns(int){
         (
@@ -86,10 +86,10 @@ contract MarketPlace {
             USDCAddress.transfer(msg.sender, compartibleUser.tokenAmount);
             DAIAddress.transfer(compartibleUser.userAddress, amount);
              AddUserToDataBase(amount, 1, true);
-             daiUsersNumbers;
+             daiUsersNumbers ++;
         } else {
             AddUserToDataBase(amount, 1, false);
-            daiUsersNumbers;
+            daiUsersNumbers ++;
         }
         emit exchange(msg.sender,compartibleUser.userAddress, amount, 1,  compartibleUser.tokenAmount);
         return true;
