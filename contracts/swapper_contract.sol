@@ -8,8 +8,8 @@ import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 contract MarketPlace {
     AggregatorV3Interface internal DAIPriceFeed;
     AggregatorV3Interface internal USDCPriceFeed;
-    uint256 daiUsersNumbers;
-    uint256 usdcUsersNumbers;
+    uint256 daiUsersNumbers = 0;
+    uint256 usdcUsersNumbers = 0;
     IERC20 USDCAddress ;
     // 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 ;
     IERC20 DAIAddress ;
@@ -76,7 +76,7 @@ contract MarketPlace {
         bool transferred = DAIAddress.transferFrom(msg.sender, address(this), amount);
         require(transferred, "Token Transfer Failed");
         users memory compartibleUser;
-        for(uint i =0; i<usdcUsersNumbers; i++){
+        for(uint i =0; i<usersDetails[1].length; i++){
             bool results = comparePrices(amount, usersDetails[1][i].tokenAmount);
             if(results && !usersDetails[1][i].status){
                  compartibleUser = usersDetails[1][i];
@@ -86,11 +86,12 @@ contract MarketPlace {
             USDCAddress.transfer(msg.sender, compartibleUser.tokenAmount);
             DAIAddress.transfer(compartibleUser.userAddress, amount);
              AddUserToDataBase(amount, 1, true);
-             daiUsersNumbers ++;
+             daiUsersNumbers += 1;
         } else {
             AddUserToDataBase(amount, 1, false);
-            daiUsersNumbers ++;
+            daiUsersNumbers += 1;
         }
+        console.log(daiUsersNumbers);
         emit exchange(msg.sender,compartibleUser.userAddress, amount, 1,  compartibleUser.tokenAmount);
         return true;
     }
@@ -100,22 +101,26 @@ contract MarketPlace {
         uint256 usdcBalance = USDCAddress.balanceOf(msg.sender);
         require(usdcBalance>= _amount, "You do not have enough tokens");
         bool transferred = USDCAddress.transferFrom(msg.sender, address(this), _amount);
+        console.log(transferred);
         require(transferred, "Token Transfer Failed");
         users memory compartibleUser;
-        for(uint i =0; i<daiUsersNumbers; i++){
+        console.log(daiUsersNumbers);
+        for(uint i =0; i< usersDetails[2].length; i++){
             bool results = comparePrices( usersDetails[2][i].tokenAmount, _amount);
+            console.log(!usersDetails[2][i].status);
             if(results && !usersDetails[2][i].status){
                  compartibleUser = usersDetails[2][i];
             }
         }
+        console.log(compartibleUser.userAddress);
         if(compartibleUser.userAddress != address(0)){
-            DAIAddress.transfer(compartibleUser.userAddress, _amount);
-            USDCAddress.transfer(msg.sender, compartibleUser.tokenAmount);
+            DAIAddress.transfer(msg.sender, compartibleUser.tokenAmount);
+            USDCAddress.transfer(compartibleUser.userAddress, _amount);
              AddUserToDataBase(_amount, 2, true);
-             usdcUsersNumbers++;
+             usdcUsersNumbers += 1;
         } else {
             AddUserToDataBase(_amount, 2, false);
-            usdcUsersNumbers++;
+            usdcUsersNumbers += 1;
         }
         emit exchange(msg.sender,compartibleUser.userAddress, _amount, 2,  compartibleUser.tokenAmount);
         return true;

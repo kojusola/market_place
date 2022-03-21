@@ -3,9 +3,9 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
+const hre = require("hardhat");
 USDCTokenHolder = "0xc333e80ef2dec2805f239e3f1e810612d294f771";
 DAItOkenHolder = "0x2acf35c9a3f4c5c3f4c78ef5fb64c3ee82f07c45";
-const hre = require("hardhat");
 
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
@@ -16,7 +16,7 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Market = await hre.ethers.getContractFactory("swapper_contract");
+  const Market = await hre.ethers.getContractFactory("MarketPlace");
   const market = await Market.deploy(
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     "0x6b175474e89094c44da98b954eedeac495271d0f"
@@ -49,6 +49,7 @@ async function main() {
   );
 
   await market.deployed();
+  console.log("marketplace address", market.address);
 
   console.log(await market.getDaiPrices());
   console.log(await market.getUSDCPrices());
