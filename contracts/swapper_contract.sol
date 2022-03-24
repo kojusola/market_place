@@ -57,9 +57,9 @@ contract MarketPlace {
     function comparePrices(uint256 DAIAmount, uint256 USDCAmount) private view returns(bool){
        int DAIPrice = getDaiPrices();
        int USDCPrice = getUSDCPrices();
-       console.log("DAI amount",(DAIAmount * uint(DAIPrice)));
-       console.log("USDC amount",(USDCAmount * uint(USDCPrice)));
-       return ((DAIAmount * uint(DAIPrice)) == (USDCAmount * uint(USDCPrice)));
+       console.log("DAI amount",(DAIAmount * uint(DAIPrice))/ (10**8));
+       console.log("USDC amount",(USDCAmount * uint(USDCPrice)/ (10**8)));
+       return ((DAIAmount * uint(DAIPrice) / (10**8)) == (USDCAmount * uint(USDCPrice)/ (10**8)));
     }
 
     function AddUserToDataBase(uint256 _amount, uint8 tokenType, bool _status) private returns(bool){
