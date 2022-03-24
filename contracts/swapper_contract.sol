@@ -57,6 +57,8 @@ contract MarketPlace {
     function comparePrices(uint256 DAIAmount, uint256 USDCAmount) private view returns(bool){
        int DAIPrice = getDaiPrices();
        int USDCPrice = getUSDCPrices();
+       console.log("DAI amount",(DAIAmount * uint(DAIPrice)));
+       console.log("USDC amount",(USDCAmount * uint(USDCPrice)));
        return ((DAIAmount * uint(DAIPrice)) == (USDCAmount * uint(USDCPrice)));
     }
 
@@ -76,10 +78,10 @@ contract MarketPlace {
         bool transferred = DAIAddress.transferFrom(msg.sender, address(this), amount);
         require(transferred, "Token Transfer Failed");
         users memory compartibleUser;
-        for(uint i =0; i<usersDetails[1].length; i++){
-            bool results = comparePrices(amount, usersDetails[1][i].tokenAmount);
-            if(results && !usersDetails[1][i].status){
-                 compartibleUser = usersDetails[1][i];
+        for(uint i =0; i<usersDetails[2].length; i++){
+            bool results = comparePrices(amount, usersDetails[2][i].tokenAmount);
+            if(results && !usersDetails[2][i].status){
+                 compartibleUser = usersDetails[2][i];
             }
         }
         if(compartibleUser.userAddress != address(0)){
@@ -105,11 +107,12 @@ contract MarketPlace {
         require(transferred, "Token Transfer Failed");
         users memory compartibleUser;
         console.log(daiUsersNumbers);
-        for(uint i =0; i< usersDetails[2].length; i++){
-            bool results = comparePrices( usersDetails[2][i].tokenAmount, _amount);
-            console.log(!usersDetails[2][i].status);
-            if(results && !usersDetails[2][i].status){
-                 compartibleUser = usersDetails[2][i];
+        console.log(usersDetails[2].length);
+        for(uint i =0; i< usersDetails[1].length; i++){
+            bool results = comparePrices( usersDetails[1][i].tokenAmount, _amount);
+            console.log(!usersDetails[1][i].status);
+            if(results && !usersDetails[1][i].status){
+                 compartibleUser = usersDetails[1][i];
             }
         }
         console.log(compartibleUser.userAddress);
