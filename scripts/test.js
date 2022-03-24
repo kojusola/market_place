@@ -34,12 +34,10 @@ async function main() {
   console.log(
     `approved the contract to spend ${await daiContract.approve(
       marketPlaceContract,
-      ethers.utils.parseUnits("0.000000000000999493", 18)
+      ethers.utils.parseUnits("0.999978", 18)
     )}`
   );
-  console.log(
-    await Market.DaiToUSDC(ethers.utils.parseUnits("0.000000000000999493", 18))
-  );
+  console.log(await Market.DaiToUSDC(ethers.utils.parseUnits("0.999978", 6)));
   console.log(
     `Dai balance after ${await daiContract.balanceOf(DAItOkenHolder)}`
   );

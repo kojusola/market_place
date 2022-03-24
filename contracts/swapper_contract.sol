@@ -58,7 +58,7 @@ contract MarketPlace {
        int DAIPrice = getDaiPrices();
        int USDCPrice = getUSDCPrices();
        console.log("DAI amount",(DAIAmount * uint(DAIPrice))/ (10**8));
-       console.log("USDC amount",(USDCAmount * uint(USDCPrice)/ (10**8)));
+       console.log("USDC amount",(USDCAmount * uint(USDCPrice))/ (10**8));
        return ((DAIAmount * uint(DAIPrice) / (10**8)) == (USDCAmount * uint(USDCPrice)/ (10**8)));
     }
 
@@ -75,20 +75,22 @@ contract MarketPlace {
         require(amount > 0, "You need to sell at least some tokens");
         uint256 daiBalance = DAIAddress.balanceOf(msg.sender);
         require(daiBalance>= amount, "You do not have enough tokens");
-        bool transferred = DAIAddress.transferFrom(msg.sender, address(this), amount);
+        bool transferred = DAIAddress.transferFrom(msg.sender, address(this), amount * 10 ** 12);
         require(transferred, "Token Transfer Failed");
         users memory compartibleUser;
         for(uint i =0; i<usersDetails[2].length; i++){
             bool results = comparePrices(amount, usersDetails[2][i].tokenAmount);
+            console.log(!usersDetails[2][i].status);
             if(results && !usersDetails[2][i].status){
                  compartibleUser = usersDetails[2][i];
             }
         }
         if(compartibleUser.userAddress != address(0)){
             USDCAddress.transfer(msg.sender, compartibleUser.tokenAmount);
-            DAIAddress.transfer(compartibleUser.userAddress, amount);
+            DAIAddress.transfer(compartibleUser.userAddress, amount * 10 ** 12);
              AddUserToDataBase(amount, 1, true);
              daiUsersNumbers += 1;
+             compartibleUser.status = true;
         } else {
             AddUserToDataBase(amount, 1, false);
             daiUsersNumbers += 1;
@@ -117,10 +119,11 @@ contract MarketPlace {
         }
         console.log(compartibleUser.userAddress);
         if(compartibleUser.userAddress != address(0)){
-            DAIAddress.transfer(msg.sender, compartibleUser.tokenAmount);
+            DAIAddress.transfer(msg.sender, compartibleUser.tokenAmount * 10 ** 12);
             USDCAddress.transfer(compartibleUser.userAddress, _amount);
              AddUserToDataBase(_amount, 2, true);
              usdcUsersNumbers += 1;
+             compartibleUser.status = true;
         } else {
             AddUserToDataBase(_amount, 2, false);
             usdcUsersNumbers += 1;
