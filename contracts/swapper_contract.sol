@@ -78,11 +78,13 @@ contract MarketPlace {
         bool transferred = DAIAddress.transferFrom(msg.sender, address(this), amount * 10 ** 12);
         require(transferred, "Token Transfer Failed");
         users memory compartibleUser;
+        uint user;
         for(uint i =0; i<usersDetails[2].length; i++){
             bool results = comparePrices(amount, usersDetails[2][i].tokenAmount);
             console.log(!usersDetails[2][i].status);
             if(results && !usersDetails[2][i].status){
                  compartibleUser = usersDetails[2][i];
+                  user = i;
             }
         }
         if(compartibleUser.userAddress != address(0)){
@@ -90,7 +92,7 @@ contract MarketPlace {
             DAIAddress.transfer(compartibleUser.userAddress, amount * 10 ** 12);
              AddUserToDataBase(amount, 1, true);
              daiUsersNumbers += 1;
-             compartibleUser.status = true;
+            usersDetails[1][user].status = true;
         } else {
             AddUserToDataBase(amount, 1, false);
             daiUsersNumbers += 1;
@@ -108,6 +110,7 @@ contract MarketPlace {
         console.log(transferred);
         require(transferred, "Token Transfer Failed");
         users memory compartibleUser;
+        uint user;
         console.log(daiUsersNumbers);
         console.log(usersDetails[2].length);
         for(uint i =0; i< usersDetails[1].length; i++){
@@ -115,6 +118,7 @@ contract MarketPlace {
             console.log(!usersDetails[1][i].status);
             if(results && !usersDetails[1][i].status){
                  compartibleUser = usersDetails[1][i];
+                 user = i;
             }
         }
         console.log(compartibleUser.userAddress);
@@ -123,7 +127,7 @@ contract MarketPlace {
             USDCAddress.transfer(compartibleUser.userAddress, _amount);
              AddUserToDataBase(_amount, 2, true);
              usdcUsersNumbers += 1;
-             compartibleUser.status = true;
+             usersDetails[1][user].status = true;
         } else {
             AddUserToDataBase(_amount, 2, false);
             usdcUsersNumbers += 1;
