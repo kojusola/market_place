@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 
-contract MarketPlace {
+contract SwapperContract {
     AggregatorV3Interface internal DAIPriceFeed;
     AggregatorV3Interface internal USDCPriceFeed;
     uint256 daiUsersNumbers = 0;
