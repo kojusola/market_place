@@ -59,7 +59,7 @@ contract MarketPlace {
         require(transferred, "Token Transfer Failed");
         uint result = getPrices( amount, 0);
         USDCAddress.transfer(msg.sender, result);
-        emit exchange(msg.sender, amount, 0);
+        emit exchange(msg.sender, result, 1);
         return true;
     }
 
@@ -69,7 +69,7 @@ contract MarketPlace {
         require(transferred, "Token Transfer Failed");
         uint result = getPrices( _amount, 1);
         DAIAddress.transfer(msg.sender, result);
-        emit exchange(msg.sender, result, 1);
+        emit exchange(msg.sender, result, 0);
         return true;
     }
 }
