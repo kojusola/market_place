@@ -49,7 +49,7 @@ contract MarketPlace {
         if(tokenType == 0){
              result = ((amount * uint(DAIPrice)) / uint(USDCPrice)) / 10**12;
         }else if(tokenType == 1){
-             result = (amount * uint(USDCPrice)) / uint(DAIPrice);
+             result = (amount * uint(USDCPrice)) / uint(DAIPrice) * 10**12;
         }
     }
 
