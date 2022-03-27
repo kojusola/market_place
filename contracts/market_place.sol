@@ -55,9 +55,10 @@ contract MarketPlace {
 
     function DaiToUSDC(uint256 amount) public returns (bool) {
         require(amount > 0, "You need to sell at least some tokens");
+        uint result = getPrices( amount, 0);
+        require(USDCAddress.balanceOf(address(this)) > result, "Contract token balance is low");
         bool transferred = DAIAddress.transferFrom(msg.sender, address(this), amount);
         require(transferred, "Token Transfer Failed");
-        uint result = getPrices( amount, 0);
         USDCAddress.transfer(msg.sender, result);
         emit exchange(msg.sender, result, 1);
         return true;
@@ -65,9 +66,10 @@ contract MarketPlace {
 
     function USDCToDai(uint256 _amount) public returns (bool)  {
          require(_amount > 0, "You need to sell at least some tokens");
+         uint result = getPrices( _amount, 1);
+        require(DAIAddress.balanceOf(address(this)) > result, "Contract token balance is low");
         bool transferred = USDCAddress.transferFrom(msg.sender, address(this), _amount);
         require(transferred, "Token Transfer Failed");
-        uint result = getPrices( _amount, 1);
         DAIAddress.transfer(msg.sender, result);
         emit exchange(msg.sender, result, 0);
         return true;
