@@ -12,7 +12,6 @@ contract MarketPlace {
     // 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 ;
     IERC20 DAIAddress ;
     // 0x6B175474E89094C44Da98b954EedeAC495271d0F ;
-    enum tokens {DAI, USDC}
     event exchange( address receiver, uint amount, uint8 tokenType);
     // Rinkeby network;
     // DAIToUsd = 0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF
@@ -47,9 +46,9 @@ contract MarketPlace {
     function getPrices(uint256 amount, uint8 tokenType) private view returns(uint256 result){
         int DAIPrice = getDaiPrices();
         int USDCPrice = getUSDCPrices();
-        if(tokenType == 1){
+        if(tokenType == 0){
              result = ((amount * uint(DAIPrice)) / uint(USDCPrice)) / 10**12;
-        }else if(tokenType == 2){
+        }else if(tokenType == 1){
              result = (amount * uint(USDCPrice)) / uint(DAIPrice);
         }
     }
@@ -58,9 +57,9 @@ contract MarketPlace {
         require(amount > 0, "You need to sell at least some tokens");
         bool transferred = DAIAddress.transferFrom(msg.sender, address(this), amount);
         require(transferred, "Token Transfer Failed");
-        uint result = getPrices( amount, 1);
+        uint result = getPrices( amount, 0);
         USDCAddress.transfer(msg.sender, result);
-        emit exchange(msg.sender, amount, 1);
+        emit exchange(msg.sender, amount, 0);
         return true;
     }
 
@@ -68,9 +67,9 @@ contract MarketPlace {
          require(_amount > 0, "You need to sell at least some tokens");
         bool transferred = USDCAddress.transferFrom(msg.sender, address(this), _amount);
         require(transferred, "Token Transfer Failed");
-        uint result = getPrices( _amount, 2);
+        uint result = getPrices( _amount, 1);
         DAIAddress.transfer(msg.sender, result);
-        emit exchange(msg.sender, result, 2);
+        emit exchange(msg.sender, result, 1);
         return true;
     }
 }
